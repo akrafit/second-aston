@@ -15,18 +15,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-
 @WebServlet("/customers")
 public class CustomersServlet extends HttpServlet {
     Gson gson = new Gson();
     private static JDBCPostgresSQLService jdbc;
-
-
     public void init() {
         jdbc = new JDBCPostgresSQLService();
     }
-
-
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         PrintWriter out = response.getWriter();
         response.setContentType("application/json");
@@ -41,7 +36,6 @@ public class CustomersServlet extends HttpServlet {
         }
         out.flush();
     }
-
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         PrintWriter out = resp.getWriter();
@@ -70,6 +64,4 @@ public class CustomersServlet extends HttpServlet {
         }
         out.close();
     }
-
-
 }

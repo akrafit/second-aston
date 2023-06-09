@@ -78,16 +78,17 @@
                 <version>1.10.6</version>
                 <configuration>
                     <container>
-                        <containerId>tomcat9</containerId>
+                        <containerId>tomcat9x</containerId>
                         <type>remote</type>
                     </container>
                     <configuration>
                         <type>runtime</type>
-                        <cargo.server.settings>tomcat-server</cargo.server.settings>
+                        <properties>
+                            <cargo.server.settings>tomcat-server</cargo.server.settings>
+                        </properties>
                     </configuration>
                 </configuration>
             </plugin>
         </plugins>
     </build>
-
 </project>

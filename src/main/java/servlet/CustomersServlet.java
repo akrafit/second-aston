@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 
-@WebServlet(name = "customers", value = "/customers")
+@WebServlet("/customers")
 public class CustomersServlet extends HttpServlet {
     Gson gson = new Gson();
     private static JDBCPostgresSQLService jdbc;

@@ -15,7 +15,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-@WebServlet("/customers")
+@WebServlet("/customer")
 public class CustomersServlet extends HttpServlet {
     Gson gson = new Gson();
     private static JDBCPostgresSQLService jdbc;

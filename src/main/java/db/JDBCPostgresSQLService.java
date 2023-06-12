@@ -17,7 +17,7 @@ import java.sql.Statement;
 @NoArgsConstructor
 public class JDBCPostgresSQLService {
     static ConnectionPool connectionPool;
-    private String url = "jdbc:postgresql://45.8.98.142:5432/aston";
+    private String url = "jdbc:postgresql://localhost:5432/aston";
 
     {
         try {

@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
 class JDBCPostgresSQLServiceTest {
-    JDBCPostgresSQLService jdbc = new JDBCPostgresSQLService("jdbc:postgresql://localhost:5432/aston-test");
+    JDBCPostgresSQLService jdbc = new JDBCPostgresSQLService();
     @Test
     void getCustomers() {
         CustomArrayList<Customer> customers = jdbc.getCustomers("1");

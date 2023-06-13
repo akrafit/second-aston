@@ -1,13 +1,20 @@
 package db;
 
+import com.google.gson.Gson;
 import connectionPool.BasicConnectionPool;
 import connectionPool.ConnectionPool;
 import customAarrayList.CustomArrayList;
+import dto.IdDto;
 import entity.Customer;
 import entity.Order;
 import entity.Product;
 import lombok.NoArgsConstructor;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,6 +24,7 @@ import java.sql.Statement;
 @NoArgsConstructor
 public class JDBCPostgresSQLService {
     static ConnectionPool connectionPool;
+    Gson gson = new Gson();
     private String url = "jdbc:postgresql://localhost:5432/aston";
 
     {
@@ -31,6 +39,8 @@ public class JDBCPostgresSQLService {
     public JDBCPostgresSQLService(String url) {
         this.url = url;
     }
+
+
 
     public CustomArrayList<Customer> getCustomers(String id) {
         StringBuilder query = new StringBuilder("SELECT * FROM customers");
@@ -121,5 +131,73 @@ public class JDBCPostgresSQLService {
             orders.add(product);
         }
         return orders;
+    }
+    public void doGetCostumers(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        PrintWriter out = response.getWriter();
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        String id = request.getParameter("id");
+        if(id == null){
+            CustomArrayList<Customer> list = getCustomers("all");
+            out.print(gson.toJson(list));
+        }else{
+            CustomArrayList<Customer> list = getCustomers(id);
+            out.print(gson.toJson(list.get(0)));
+        }
+        out.flush();
+    }
+
+    public void doPostCostumers(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        PrintWriter out = response.getWriter();
+        response.setContentType("application/json");
+        StringBuilder jb = new StringBuilder();
+        String line;
+        IdDto idDto = null;
+        try {
+            BufferedReader reader = request.getReader();
+            while ((line = reader.readLine()) != null) {
+                jb.append(line);
+            }
+            idDto = gson.fromJson(String.valueOf(jb),IdDto.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if(idDto != null && idDto.getType().equals("products")){
+            CustomArrayList<Product> list = getProductsByCustomerId(String.valueOf(idDto.getId()));
+            out.print(gson.toJson(list));
+        }else if (idDto != null && idDto.getType().equals("customer")){
+            CustomArrayList<Customer> list = getCustomers(String.valueOf(idDto.getId()));
+            out.print(gson.toJson(list.get(0)));
+        }else {
+            CustomArrayList<Customer> list = getCustomers("all");
+            out.print(gson.toJson(list));
+        }
+        out.close();
+    }
+
+    public void dopPostOrders(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        PrintWriter out = response.getWriter();
+        response.setContentType("application/json");
+        StringBuilder jb = new StringBuilder();
+        String line;
+        IdDto idDto = null;
+        try {
+            BufferedReader reader = request.getReader();
+            while ((line = reader.readLine()) != null) {
+                jb.append(line);
+            }
+            idDto = gson.fromJson(String.valueOf(jb),IdDto.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if(idDto == null){
+            CustomArrayList<Order> list = getOrders();
+            out.print(gson.toJson(list));
+        }else{
+            CustomArrayList<Order> list = getOrderById(String.valueOf(idDto.getId()));
+            out.print(gson.toJson(list.get(0)));
+        }
+        out.close();
     }
 }

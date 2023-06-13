@@ -5,12 +5,24 @@ import entity.Customer;
 import entity.Order;
 import entity.Product;
 import org.junit.jupiter.api.Test;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 
+@Testcontainers
 class JDBCPostgresSQLServiceTest {
-    JDBCPostgresSQLService jdbc = new JDBCPostgresSQLService("jdbc:postgresql://localhost:5432/aston-test");
+    private static final String DATABASE_NAME = "aston-test";
+    @Container
+    public static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres")
+            .withUsername("postgres")
+            .withPassword("postgres")
+            .withInitScript("data.sql")
+            .withReuse(true)
+            .withDatabaseName(DATABASE_NAME);
+    JDBCPostgresSQLService jdbc = new JDBCPostgresSQLService("jdbc:postgresql://"+postgreSQLContainer.getHost()+"/"+postgreSQLContainer.getDatabaseName());
     @Test
     void getCustomers() {
         CustomArrayList<Customer> customers = jdbc.getCustomers("1");

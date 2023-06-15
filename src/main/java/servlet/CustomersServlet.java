@@ -1,6 +1,6 @@
 package servlet;
 
-import db.JDBCPostgresSQLService;
+import service.SQLService;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -8,12 +8,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet("/customer")
+@WebServlet("/customers")
 public class CustomersServlet extends HttpServlet {
-
-    private static JDBCPostgresSQLService service;
+    private static SQLService service;
     public void init() {
-        service = new JDBCPostgresSQLService();
+        service = new SQLService();
     }
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         service.doGetCostumers(request, response);

@@ -1,6 +1,6 @@
 package servlet;
 
-import service.SQLService;
+import service.CustomerService;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -10,9 +10,9 @@ import java.io.IOException;
 
 @WebServlet("/customers")
 public class CustomersServlet extends HttpServlet {
-    private static SQLService service;
+    private static CustomerService service;
     public void init() {
-        service = new SQLService();
+        service = new CustomerService();
     }
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         service.doGetCostumers(request, response);

@@ -14,6 +14,7 @@ public class Order {
     private Customer customer;
     private String orderDate;
     private String totalPrice;
+
     private List<Order2Products> order2Products;
 
     public Order(int id, Customer customer, String orderDate, String totalPrice) {

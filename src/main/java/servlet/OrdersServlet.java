@@ -1,6 +1,6 @@
 package servlet;
 
-import service.SQLService;
+import service.OrderService;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -10,12 +10,12 @@ import java.io.IOException;
 
 @WebServlet("/orders")
 public class OrdersServlet extends HttpServlet {
-    private static SQLService service;
+    private static OrderService orderService;
     public void init() {
-        service = new SQLService();
+        orderService = new OrderService();
     }
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        service.dopPostOrders(req,resp);
+        orderService.dopPostOrders(req,resp);
     }
 }

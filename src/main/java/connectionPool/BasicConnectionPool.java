@@ -1,40 +1,36 @@
 package connectionPool;
 
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.LinkedList;
+import java.util.Properties;
 import java.util.Queue;
 
-@Getter
 @NoArgsConstructor
 public class BasicConnectionPool implements ConnectionPool {
     private static final int MAX_TIMEOUT = 10000;
     private static final int INITIAL_POOL_SIZE = 10;
-    public String url = "jdbc:postgresql://localhost:5432/aston";
-    public String user = "postgres";
-    public String password = "postgres";
+    public String url;
+    public String user;
+    public String password;
     private Queue<Connection> connectionPool;
-
-    public BasicConnectionPool(String url, String user, String password) {
-        this.url = url;
-        this.user = user;
-        this.password = password;
-    }
 
     @Override
     public Connection getConnection() throws SQLException {
         if (connectionPool == null) {
+            if (url == null) {
+                getAppProperties();
+            }
             try {
                 Class.forName("org.postgresql.Driver");
             } catch (ClassNotFoundException e) {
                 System.out.println("PostgreSQL JDBC Driver is not found. Include it in your library path ");
                 e.printStackTrace();
             }
-
             Queue<Connection> pool = new LinkedList<>();
             for (int i = 0; i < INITIAL_POOL_SIZE; i++) {
                 pool.offer(createConnection(url, user, password));
@@ -49,6 +45,24 @@ public class BasicConnectionPool implements ConnectionPool {
 
         connectionPool.offer(connection);
         return connection;
+    }
+
+    private void getAppProperties() {
+        Properties properties = new Properties();
+        if (System.getProperty("url") == null) {
+            try {
+                properties.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("application.properties"));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            this.url = properties.getProperty("url");
+            this.user = properties.getProperty("user");
+            this.password = properties.getProperty("password");
+        } else {
+            this.url = System.getProperty("url");
+            this.user = System.getProperty("user");
+            this.password = System.getProperty("password");
+        }
     }
 
     private static Connection createConnection(
